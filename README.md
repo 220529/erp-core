@@ -1,98 +1,205 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# ERP Core - 企业级ERP系统核心框架
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+## 项目简介
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+基于 NestJS 的现代化企业ERP系统核心框架，采用"数据库驱动业务逻辑"架构：
+- **动态业务流程**：业务逻辑代码存储在数据库中，支持热更新
+- **核心框架层**：提供数据访问、认证授权、API接口等基础设施
+- **高度灵活**：无需重启即可更新业务逻辑
 
-## Description
+## 技术栈
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+- **框架**: NestJS + TypeScript
+- **数据库**: MySQL + TypeORM
+- **缓存**: Redis (可选)
+- **认证**: JWT + Passport
+- **文档**: Swagger
 
-## Project setup
+## 核心实体（17张表）
 
-```bash
-$ pnpm install
-```
+| 表名 | 说明 |
+|------|------|
+| users | 系统用户 |
+| companies | 公司信息 |
+| departments | 部门信息 |
+| roles | 角色管理 |
+| menus | 菜单管理 |
+| role_menus | 角色菜单关联 |
+| customers | 客户信息 |
+| customer_follows | 客户跟进记录 |
+| materials | 物料库 |
+| orders | 订单主表 |
+| order_materials | 订单物料明细 |
+| payments | 收款记录 |
+| projects | 施工项目 |
+| files | 文件管理 |
+| dicts | 字典配置 |
+| logs | 操作日志 |
+| code_flows | 代码流程（核心）|
 
-## Compile and run the project
+## 快速开始
 
-```bash
-# development
-$ pnpm run start
-
-# watch mode
-$ pnpm run start:dev
-
-# production mode
-$ pnpm run start:prod
-```
-
-## Run tests
+### 1. 安装依赖
 
 ```bash
-# unit tests
-$ pnpm run test
-
-# e2e tests
-$ pnpm run test:e2e
-
-# test coverage
-$ pnpm run test:cov
+pnpm install
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
+### 2. 启动数据库（使用Docker）
 
 ```bash
-$ pnpm install -g @nestjs/mau
-$ mau deploy
+cd E:\frame\db-app
+docker-compose up -d
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+服务列表：
+- MySQL: `localhost:3306` (root/root)
+- Redis: `localhost:6379`
+- phpMyAdmin: `http://localhost:8888`
 
-## Resources
+### 3. 配置环境变量
 
-Check out a few resources that may come in handy when working with NestJS:
+创建 `.env` 文件：
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+```env
+NODE_ENV=development
+PORT=3000
 
-## Support
+DB_HOST=localhost
+DB_PORT=3306
+DB_USERNAME=root
+DB_PASSWORD=root
+DB_DATABASE=erp_core
+DB_SYNCHRONIZE=true    # 生产环境设置为 false
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+REDIS_HOST=localhost
+REDIS_PORT=6379
 
-## Stay in touch
+JWT_SECRET=your-secret-key
+JWT_EXPIRES_IN=7d
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### 4. 启动项目
 
-## License
+```bash
+# 开发环境
+pnpm start:dev
 
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+# 生产环境
+pnpm build
+pnpm start:prod
+```
+
+### 5. 访问 API 文档
+
+Swagger 文档: http://localhost:3000/api
+
+## API 接口
+
+### 认证
+- `POST /api/auth/register` - 用户注册
+- `POST /api/auth/login` - 用户登录
+- `GET /api/auth/profile` - 获取用户信息
+
+### 代码流程
+- `POST /api/code/execute/:flowCode` - 执行流程
+- `GET /api/code/flows` - 列出流程
+- `POST /api/code/flows` - 创建流程（管理员）
+- `PUT /api/code/flows/:flowCode` - 更新流程（管理员）
+- `DELETE /api/code/flows/:flowCode` - 禁用流程（管理员）
+
+## 核心特性：数据库驱动业务逻辑
+
+### 设计理念
+- 业务逻辑存储在数据库
+- VM沙箱安全执行
+- 修改后立即生效，无需重启
+
+### 示例：创建业务流程
+
+```bash
+POST /api/code/flows
+Authorization: Bearer <admin-token>
+
+{
+  "code": "customer_create",
+  "name": "客户创建",
+  "category": "客户管理",
+  "codeContent": "const { repositories, params, user } = context; const { customerRepository } = repositories; const customer = customerRepository.create({ ...params, salesId: user.id, status: 'lead' }); await customerRepository.save(customer); return { success: true, data: customer };"
+}
+```
+
+### 执行业务流程
+
+```bash
+POST /api/code/execute/customer_create
+Authorization: Bearer <token>
+
+{
+  "params": {
+    "name": "张三",
+    "mobile": "13800138000",
+    "address": "北京市朝阳区"
+  }
+}
+```
+
+## 项目结构
+
+```
+src/
+├── common/              # 公共模块（常量、DTO、拦截器等）
+├── config/              # 配置模块
+├── database/            # 数据库模块
+├── entities/            # 实体定义
+├── modules/
+│   ├── auth/           # 认证授权
+│   └── code/           # 代码流程执行器
+├── app.module.ts
+└── main.ts
+```
+
+## 认证和授权
+
+### 使用JWT守卫
+
+```typescript
+import { UseGuards } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+
+@UseGuards(JwtAuthGuard)
+@Controller('protected')
+export class ProtectedController {
+  // 需要认证
+}
+```
+
+### 使用角色守卫
+
+```typescript
+import { Roles } from '../auth/decorators/roles.decorator';
+import { RolesGuard } from '../auth/guards/roles.guard';
+import { UserRole } from '../common/constants';
+
+@UseGuards(JwtAuthGuard, RolesGuard)
+@Roles(UserRole.ADMIN)
+@Get('admin-only')
+adminOnlyRoute() {
+  // 仅管理员
+}
+```
+
+## 常见问题
+
+### 数据库连接失败
+- 检查MySQL服务是否启动
+- 确认配置是否正确
+
+### 业务流程执行失败
+- 检查代码语法
+- 确认流程状态为启用（status=1）
+- 查看日志获取详细错误
+
+## 许可证
+
+MIT
