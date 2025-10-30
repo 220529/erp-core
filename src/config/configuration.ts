@@ -29,6 +29,9 @@ export default () => ({
   upload: {
     maxSize: parseInt(process.env.UPLOAD_MAX_SIZE || '10485760', 10),
     dest: process.env.UPLOAD_DEST || './uploads',
+    // 代码上传 accessSecret（用于 erp-code 项目上传代码）
+    // 注意：生产环境和测试环境必须使用不同的密钥！
+    accessSecret: process.env.UPLOAD_ACCESS_SECRET || '',
   },
 
   log: {

@@ -10,9 +10,9 @@ import { ApiProperty } from '@nestjs/swagger';
 @Index(['category'])
 @Index(['status'])
 export class CodeFlow extends BaseEntity {
-  @ApiProperty({ description: '流程编码' })
-  @Column({ length: 100, unique: true, comment: '流程唯一编码' })
-  code: string;
+  @ApiProperty({ description: '流程唯一标识' })
+  @Column({ length: 100, unique: true, comment: '流程唯一标识key' })
+  key: string;
 
   @ApiProperty({ description: '流程名称' })
   @Column({ length: 200, comment: '流程名称' })
@@ -27,8 +27,8 @@ export class CodeFlow extends BaseEntity {
   description: string;
 
   @ApiProperty({ description: '流程代码' })
-  @Column({ name: 'code_content', type: 'text', comment: '流程代码内容(JavaScript)' })
-  codeContent: string;
+  @Column({ name: 'code', type: 'text', comment: '流程代码内容(JavaScript)' })
+  code: string;
 
   @ApiProperty({ description: '状态' })
   @Column({ default: 1, comment: '状态: 1-启用 0-禁用' })

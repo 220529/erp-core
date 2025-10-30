@@ -77,6 +77,10 @@ REDIS_PORT=6379
 
 JWT_SECRET=your-secret-key
 JWT_EXPIRES_IN=7d
+
+# 代码上传密钥（用于 erp-code 项目）
+# ⚠️ 测试环境专用，生产环境必须使用不同的密钥！
+UPLOAD_ACCESS_SECRET=0689caf138107efec54461b6c1d7d8d71922b895fc41831b313cb9e9b4ea4320
 ```
 
 ### 4. 启动项目
@@ -102,11 +106,14 @@ Swagger 文档: http://localhost:3000/api
 - `GET /api/auth/profile` - 获取用户信息
 
 ### 代码流程
-- `POST /api/code/execute/:flowCode` - 执行流程
+- `POST /api/code/run/:flowKey` - 执行流程
 - `GET /api/code/flows` - 列出流程
-- `POST /api/code/flows` - 创建流程（管理员）
-- `PUT /api/code/flows/:flowCode` - 更新流程（管理员）
-- `DELETE /api/code/flows/:flowCode` - 禁用流程（管理员）
+- `GET /api/code/flows/:flowKey` - 查询流程详情
+- `POST /api/code/flows` - 创建流程
+- `PUT /api/code/flows/:flowKey` - 更新流程（管理员）
+- `DELETE /api/code/flows/:flowKey` - 禁用流程（管理员）
+- `POST /api/code/upload` - 上传代码（erp-code使用）
+- `POST /api/code/generate-access-secret` - 生成访问密钥（管理员）
 
 ## 核心特性：数据库驱动业务逻辑
 
@@ -122,17 +129,17 @@ POST /api/code/flows
 Authorization: Bearer <admin-token>
 
 {
-  "code": "customer_create",
+  "key": "customer_create",
   "name": "客户创建",
   "category": "客户管理",
-  "codeContent": "const { repositories, params, user } = context; const { customerRepository } = repositories; const customer = customerRepository.create({ ...params, salesId: user.id, status: 'lead' }); await customerRepository.save(customer); return { success: true, data: customer };"
+  "code": "const { repositories, params, user } = context; const { customerRepository } = repositories; const customer = customerRepository.create({ ...params, salesId: user.id, status: 'lead' }); await customerRepository.save(customer); return { success: true, data: customer };"
 }
 ```
 
 ### 执行业务流程
 
 ```bash
-POST /api/code/execute/customer_create
+POST /api/code/run/customer_create
 Authorization: Bearer <token>
 
 {
