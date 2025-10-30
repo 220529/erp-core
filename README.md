@@ -105,6 +105,41 @@ Swagger 文档: http://localhost:3000/api
 - `POST /api/auth/login` - 用户登录
 - `GET /api/auth/profile` - 获取用户信息
 
+### 客户管理
+- `GET /api/customers` - 查询客户列表
+- `GET /api/customers/:id` - 查询客户详情
+- `POST /api/customers` - 创建客户
+- `PUT /api/customers/:id` - 更新客户
+- `DELETE /api/customers/:id` - 删除客户
+
+### 订单管理
+- `GET /api/orders` - 查询订单列表
+- `GET /api/orders/:id` - 查询订单详情
+- `POST /api/orders` - 创建订单
+- `PUT /api/orders/:id` - 更新订单
+- `DELETE /api/orders/:id` - 删除订单
+
+### 物料管理
+- `GET /api/materials` - 查询物料列表
+- `GET /api/materials/:id` - 查询物料详情
+- `POST /api/materials` - 创建物料
+- `PUT /api/materials/:id` - 更新物料
+- `DELETE /api/materials/:id` - 删除物料
+
+### 收款管理
+- `GET /api/payments` - 查询收款列表
+- `GET /api/payments/:id` - 查询收款详情
+- `POST /api/payments` - 创建收款记录
+- `PUT /api/payments/:id` - 更新收款记录
+- `DELETE /api/payments/:id` - 删除收款记录
+
+### 项目管理
+- `GET /api/projects` - 查询项目列表
+- `GET /api/projects/:id` - 查询项目详情
+- `POST /api/projects` - 创建项目
+- `PUT /api/projects/:id` - 更新项目
+- `DELETE /api/projects/:id` - 删除项目
+
 ### 代码流程
 - `POST /api/code/run/:flowKey` - 执行流程
 - `GET /api/code/flows` - 列出流程

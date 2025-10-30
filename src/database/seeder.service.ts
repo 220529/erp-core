@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcryptjs';
-import { Role, User, Dict } from '../entities';
+import { Role, User, DictType, DictData } from '../entities';
 
 /**
  * 数据库种子数据服务
@@ -17,8 +17,10 @@ export class DatabaseSeeder implements OnModuleInit {
     private readonly roleRepository: Repository<Role>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(Dict)
-    private readonly dictRepository: Repository<Dict>,
+    @InjectRepository(DictType)
+    private readonly dictTypeRepository: Repository<DictType>,
+    @InjectRepository(DictData)
+    private readonly dictDataRepository: Repository<DictData>,
   ) {}
 
   async onModuleInit() {
@@ -111,113 +113,44 @@ export class DatabaseSeeder implements OnModuleInit {
    * 初始化字典数据
    */
   private async seedDicts() {
-    const count = await this.dictRepository.count();
+    const count = await this.dictTypeRepository.count();
     if (count > 0) {
       this.logger.log('字典数据已存在，跳过初始化');
       return;
     }
 
-    const dicts = [
+    // 1. 创建字典类型
+    const dictTypes = [
+      { code: 'customer_source', name: '客户来源', sort: 1, status: 1, remark: '客户来源渠道' },
+      { code: 'payment_method', name: '收款方式', sort: 2, status: 1, remark: '收款支付方式' },
+      { code: 'material_unit', name: '物料单位', sort: 3, status: 1, remark: '物料计量单位' },
+    ];
+    await this.dictTypeRepository.save(dictTypes);
+
+    // 2. 创建字典数据（使用 typeCode 关联）
+    const dictDataList = [
       // 客户来源
-      {
-        type: 'customer_source',
-        key: 'online',
-        value: '线上推广',
-        sort: 1,
-        status: 1,
-      },
-      {
-        type: 'customer_source',
-        key: 'offline',
-        value: '线下活动',
-        sort: 2,
-        status: 1,
-      },
-      {
-        type: 'customer_source',
-        key: 'referral',
-        value: '客户转介绍',
-        sort: 3,
-        status: 1,
-      },
-      {
-        type: 'customer_source',
-        key: 'other',
-        value: '其他渠道',
-        sort: 4,
-        status: 1,
-      },
+      { typeCode: 'customer_source', label: '线上推广', value: 'online', sort: 1, status: 1 },
+      { typeCode: 'customer_source', label: '线下活动', value: 'offline', sort: 2, status: 1 },
+      { typeCode: 'customer_source', label: '客户转介绍', value: 'referral', sort: 3, status: 1 },
+      { typeCode: 'customer_source', label: '其他渠道', value: 'other', sort: 4, status: 1 },
 
       // 收款方式
-      {
-        type: 'payment_method',
-        key: 'cash',
-        value: '现金',
-        sort: 1,
-        status: 1,
-      },
-      {
-        type: 'payment_method',
-        key: 'bank_transfer',
-        value: '银行转账',
-        sort: 2,
-        status: 1,
-      },
-      {
-        type: 'payment_method',
-        key: 'alipay',
-        value: '支付宝',
-        sort: 3,
-        status: 1,
-      },
-      {
-        type: 'payment_method',
-        key: 'wechat',
-        value: '微信支付',
-        sort: 4,
-        status: 1,
-      },
+      { typeCode: 'payment_method', label: '现金', value: 'cash', sort: 1, status: 1 },
+      { typeCode: 'payment_method', label: '银行转账', value: 'bank_transfer', sort: 2, status: 1 },
+      { typeCode: 'payment_method', label: '支付宝', value: 'alipay', sort: 3, status: 1 },
+      { typeCode: 'payment_method', label: '微信支付', value: 'wechat', sort: 4, status: 1 },
 
-      // 材料单位
-      {
-        type: 'material_unit',
-        key: 'piece',
-        value: '个',
-        sort: 1,
-        status: 1,
-      },
-      {
-        type: 'material_unit',
-        key: 'meter',
-        value: '米',
-        sort: 2,
-        status: 1,
-      },
-      {
-        type: 'material_unit',
-        key: 'square_meter',
-        value: '平方米',
-        sort: 3,
-        status: 1,
-      },
-      {
-        type: 'material_unit',
-        key: 'box',
-        value: '盒',
-        sort: 4,
-        status: 1,
-      },
-      {
-        type: 'material_unit',
-        key: 'set',
-        value: '套',
-        sort: 5,
-        status: 1,
-      },
+      // 物料单位
+      { typeCode: 'material_unit', label: '个', value: 'piece', sort: 1, status: 1 },
+      { typeCode: 'material_unit', label: '米', value: 'meter', sort: 2, status: 1 },
+      { typeCode: 'material_unit', label: '平方米', value: 'square_meter', sort: 3, status: 1 },
+      { typeCode: 'material_unit', label: '盒', value: 'box', sort: 4, status: 1 },
+      { typeCode: 'material_unit', label: '套', value: 'set', sort: 5, status: 1 },
     ];
+    await this.dictDataRepository.save(dictDataList);
 
-    await this.dictRepository.save(dicts);
-    this.logger.log(`✅ 已初始化 ${dicts.length} 条字典数据`);
+    this.logger.log(`✅ 已初始化 ${dictTypes.length} 个字典类型和 ${dictDataList.length} 条字典数据`);
   }
 }
 

@@ -17,7 +17,8 @@ import {
   Payment,
   Project,
   File,
-  Dict,
+  DictType,
+  DictData,
   Menu,
   RoleMenu,
   Log,
@@ -42,7 +43,8 @@ interface CodeContext {
     paymentRepository: Repository<Payment>;
     projectRepository: Repository<Project>;
     fileRepository: Repository<File>;
-    dictRepository: Repository<Dict>;
+    dictTypeRepository: Repository<DictType>;
+    dictDataRepository: Repository<DictData>;
     menuRepository: Repository<Menu>;
     roleMenuRepository: Repository<RoleMenu>;
     logRepository: Repository<Log>;
@@ -136,8 +138,10 @@ export class CodeExecutorService {
     private readonly projectRepository: Repository<Project>,
     @InjectRepository(File)
     private readonly fileRepository: Repository<File>,
-    @InjectRepository(Dict)
-    private readonly dictRepository: Repository<Dict>,
+    @InjectRepository(DictType)
+    private readonly dictTypeRepository: Repository<DictType>,
+    @InjectRepository(DictData)
+    private readonly dictDataRepository: Repository<DictData>,
     @InjectRepository(Menu)
     private readonly menuRepository: Repository<Menu>,
     @InjectRepository(RoleMenu)
@@ -188,7 +192,8 @@ export class CodeExecutorService {
         paymentRepository: this.paymentRepository,
         projectRepository: this.projectRepository,
         fileRepository: this.fileRepository,
-        dictRepository: this.dictRepository,
+        dictTypeRepository: this.dictTypeRepository,
+        dictDataRepository: this.dictDataRepository,
         menuRepository: this.menuRepository,
         roleMenuRepository: this.roleMenuRepository,
         logRepository: this.logRepository,

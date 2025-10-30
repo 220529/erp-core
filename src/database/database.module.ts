@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseSeeder } from './seeder.service';
-import { Role, User, Dict } from '../entities';
+import { Role, User, DictType, DictData } from '../entities';
 
 @Module({
   imports: [
@@ -23,7 +23,7 @@ import { Role, User, Dict } from '../entities';
         charset: 'utf8mb4',
       }),
     }),
-    TypeOrmModule.forFeature([Role, User, Dict]),
+    TypeOrmModule.forFeature([Role, User, DictType, DictData]),
   ],
   providers: [DatabaseSeeder],
 })

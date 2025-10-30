@@ -3,23 +3,19 @@ import { BaseEntity } from '../common/entities/base.entity';
 import { ApiProperty } from '@nestjs/swagger';
 
 /**
- * 字典实体
+ * 字典类型实体
  */
-@Entity({ name: 'dicts', comment: '字典表' })
-@Index(['type'])
+@Entity({ name: 'dict_types', comment: '字典类型表' })
+@Index(['code'], { unique: true })
 @Index(['status'])
-export class Dict extends BaseEntity {
-  @ApiProperty({ description: '字典类型' })
-  @Column({ length: 50, comment: '字典类型(如: customer_source, order_type等)' })
-  type: string;
+export class DictType extends BaseEntity {
+  @ApiProperty({ description: '字典类型编码' })
+  @Column({ length: 50, comment: '字典类型编码 如: customer_source' })
+  code: string;
 
-  @ApiProperty({ description: '字典键' })
-  @Column({ length: 50, comment: '字典键' })
-  key: string;
-
-  @ApiProperty({ description: '字典值' })
-  @Column({ length: 200, comment: '字典值' })
-  value: string;
+  @ApiProperty({ description: '字典类型名称' })
+  @Column({ length: 100, comment: '字典类型名称 如: 客户来源' })
+  name: string;
 
   @ApiProperty({ description: '排序' })
   @Column({ default: 0, comment: '排序序号' })

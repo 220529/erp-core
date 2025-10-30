@@ -3,6 +3,7 @@ import { BaseEntity } from '../common/entities/base.entity';
 import { ProjectStatus } from '../common/constants';
 import { ApiProperty } from '@nestjs/swagger';
 import { Order } from './order.entity';
+import { Customer } from './customer.entity';
 
 /**
  * 项目实体
@@ -52,5 +53,9 @@ export class Project extends BaseEntity {
   @ManyToOne(() => Order, (order) => order.projects)
   @JoinColumn({ name: 'order_id' })
   order: Order;
+
+  @ManyToOne(() => Customer)
+  @JoinColumn({ name: 'customer_id' })
+  customer: Customer;
 }
 
