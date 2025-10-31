@@ -31,6 +31,11 @@ export class CreateCustomerDto {
   @IsOptional()
   address?: string;
 
+  @ApiPropertyOptional({ description: '区域', example: '朝阳区' })
+  @IsString()
+  @IsOptional()
+  area?: string;
+
   @ApiPropertyOptional({ description: '客户来源', example: '网络推广' })
   @IsString()
   @IsOptional()

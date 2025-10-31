@@ -44,6 +44,9 @@ importers:
       class-validator:
         specifier: ^0.14.2
         version: 0.14.2
+      dayjs:
+        specifier: ^1.11.18
+        version: 1.11.18
       ioredis:
         specifier: ^5.8.2
         version: 5.8.2

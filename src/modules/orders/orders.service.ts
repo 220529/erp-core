@@ -21,7 +21,7 @@ export class OrdersService {
       ...createOrderDto,
       orderNo,
       status: OrderStatus.DRAFT,
-      paidAmount: createOrderDto.paidAmount || 0,
+      paidAmount: 0, // 初始已收金额总是0
     });
     
     return await this.orderRepository.save(order);
@@ -90,11 +90,16 @@ export class OrdersService {
     await this.orderRepository.remove(order);
   }
 
+  /**
+   * 生成订单编号
+   * 规则：DD + YYYYMMDD + 4位随机数
+   * 示例：DD202510310001
+   */
   private async generateOrderNo(): Promise<string> {
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `ORD${dateStr}${random}`;
+    return `DD${dateStr}${random}`;
   }
 }
 

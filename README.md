@@ -63,7 +63,7 @@ docker-compose up -d
 
 ```env
 NODE_ENV=development
-PORT=3000
+PORT=3009
 
 DB_HOST=localhost
 DB_PORT=3306
@@ -96,7 +96,7 @@ pnpm start:prod
 
 ### 5. 访问 API 文档
 
-Swagger 文档: http://localhost:3000/api
+Swagger 文档: http://localhost:3009/api
 
 ## API 接口
 

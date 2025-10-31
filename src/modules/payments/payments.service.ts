@@ -86,11 +86,16 @@ export class PaymentsService {
     await this.paymentRepository.remove(payment);
   }
 
+  /**
+   * 生成收款单号
+   * 规则：SK + YYYYMMDD + 4位随机数
+   * 示例：SK202510310001
+   */
   private async generatePaymentNo(): Promise<string> {
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `PAY${dateStr}${random}`;
+    return `SK${dateStr}${random}`;
   }
 }
 

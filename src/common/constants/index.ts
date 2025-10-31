@@ -46,6 +46,7 @@ export enum OrderStatus {
  */
 export enum OrderItemCategory {
   MAIN = 'main', // 主材
+  AUXILIARY = 'auxiliary', // 辅材
   LABOR = 'labor', // 人工
   ADDITION = 'addition', // 增项
 }
@@ -54,7 +55,8 @@ export enum OrderItemCategory {
  * 材料类别枚举
  */
 export enum MaterialCategory {
-  MAIN = 'main', // 主材
+  MAIN = 'main', // 主材（地板、瓷砖、橱柜等）
+  AUXILIARY = 'auxiliary', // 辅材（水泥、沙子、电线等）
   LABOR = 'labor', // 人工
 }
 
@@ -86,11 +88,10 @@ export enum PaymentStatus {
 }
 
 /**
- * 项目状态枚举
+ * 产品状态枚举
  */
-export enum ProjectStatus {
-  PLANNING = 'planning', // 规划中
-  IN_PROGRESS = 'in_progress', // 施工中
-  PAUSED = 'paused', // 暂停
-  COMPLETED = 'completed', // 已完工
+export enum ProductStatus {
+  ACTIVE = 'active', // 启用
+  INACTIVE = 'inactive', // 停用
 }
+

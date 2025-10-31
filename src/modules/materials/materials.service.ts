@@ -15,22 +15,38 @@ export class MaterialsService {
   ) {}
 
   async create(createMaterialDto: CreateMaterialDto): Promise<Material> {
-    const code = await this.generateMaterialCode();
+    const category = (createMaterialDto.category as MaterialCategory) || MaterialCategory.MAIN;
+    const code = await this.generateMaterialCode(category);
     
     const material = this.materialRepository.create({
       ...createMaterialDto,
       code,
-      category: (createMaterialDto.category as MaterialCategory) || MaterialCategory.MAIN,
+      category,
     });
     
     return await this.materialRepository.save(material);
   }
   
-  private async generateMaterialCode(): Promise<string> {
+  /**
+   * 生成物料编码
+   * 规则：前缀 + YYYYMMDD + 4位随机数
+   * - 主材(main): ZC + 日期 + 随机数，如 ZC202510310001
+   * - 辅材(auxiliary): FC + 日期 + 随机数，如 FC202510310001
+   * - 人工(labor): RG + 日期 + 随机数，如 RG202510310001
+   */
+  private async generateMaterialCode(category: MaterialCategory): Promise<string> {
+    const prefixMap = {
+      [MaterialCategory.MAIN]: 'ZC',        // 主材
+      [MaterialCategory.AUXILIARY]: 'FC',   // 辅材
+      [MaterialCategory.LABOR]: 'RG',       // 人工
+    };
+    
+    const prefix = prefixMap[category] || 'MAT';
     const date = new Date();
     const dateStr = date.toISOString().slice(0, 10).replace(/-/g, '');
     const random = Math.floor(Math.random() * 10000).toString().padStart(4, '0');
-    return `MAT${dateStr}${random}`;
+    
+    return `${prefix}${dateStr}${random}`;
   }
 
   async findAll(query: QueryMaterialDto) {

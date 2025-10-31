@@ -25,8 +25,8 @@ async function bootstrap() {
   app.useGlobalPipes(
     new ValidationPipe({
       transform: true,
-      whitelist: true,
-      forbidNonWhitelisted: true,
+      whitelist: true,           // 自动剥离未定义的属性
+      forbidNonWhitelisted: false, // 不禁止额外字段，只是自动过滤掉
     }),
   );
 
@@ -43,19 +43,20 @@ async function bootstrap() {
     .setVersion('1.0')
     .addBearerAuth()
     .addTag('auth', '认证模块')
+    .addTag('constants', '系统常量')
     .addTag('users', '用户管理')
     .addTag('customers', '客户管理')
     .addTag('orders', '订单管理')
     .addTag('materials', '材料管理')
+    .addTag('products', '产品套餐管理')
     .addTag('payments', '收款管理')
-    .addTag('projects', '项目管理')
     .addTag('files', '文件管理')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api-docs', app, document);
 
-  const port = process.env.PORT || 3000;
+  const port = process.env.PORT || 3009;
   await app.listen(port);
 
   console.log(`

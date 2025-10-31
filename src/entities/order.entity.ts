@@ -5,7 +5,6 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Customer } from './customer.entity';
 import { OrderMaterial } from './order-material.entity';
 import { Payment } from './payment.entity';
-import { Project } from './project.entity';
 
 /**
  * 订单实体
@@ -101,8 +100,5 @@ export class Order extends BaseEntity {
 
   @OneToMany(() => Payment, (payment) => payment.order)
   payments: Payment[];
-
-  @OneToMany(() => Project, (project) => project.order)
-  projects: Project[];
 }
 

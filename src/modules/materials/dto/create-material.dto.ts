@@ -27,11 +27,22 @@ export class CreateMaterialDto {
   @IsOptional()
   unit?: string;
 
-  @ApiPropertyOptional({ description: '单价', example: 88.5 })
+  @ApiPropertyOptional({ description: '成本价', example: 50.0 })
   @IsNumber()
   @IsOptional()
   @Min(0)
-  price?: number;
+  costPrice?: number;
+
+  @ApiPropertyOptional({ description: '销售价', example: 88.5 })
+  @IsNumber()
+  @IsOptional()
+  @Min(0)
+  salePrice?: number;
+
+  @ApiPropertyOptional({ description: '图片URL' })
+  @IsString()
+  @IsOptional()
+  imageUrl?: string;
 
   @ApiPropertyOptional({ description: '备注' })
   @IsString()

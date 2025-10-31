@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { randomBytes } from 'crypto';
 import * as vm from 'vm';
+import * as dayjs from 'dayjs';
 import {
   User,
   Company,
@@ -12,10 +13,11 @@ import {
   Customer,
   CustomerFollow,
   Material,
+  Product,
+  ProductMaterial,
   Order,
   OrderMaterial,
   Payment,
-  Project,
   File,
   DictType,
   DictData,
@@ -38,10 +40,11 @@ interface CodeContext {
     customerRepository: Repository<Customer>;
     customerFollowRepository: Repository<CustomerFollow>;
     materialRepository: Repository<Material>;
+    productRepository: Repository<Product>;
+    productMaterialRepository: Repository<ProductMaterial>;
     orderRepository: Repository<Order>;
     orderMaterialRepository: Repository<OrderMaterial>;
     paymentRepository: Repository<Payment>;
-    projectRepository: Repository<Project>;
     fileRepository: Repository<File>;
     dictTypeRepository: Repository<DictType>;
     dictDataRepository: Repository<DictData>;
@@ -128,14 +131,16 @@ export class CodeExecutorService {
     private readonly customerFollowRepository: Repository<CustomerFollow>,
     @InjectRepository(Material)
     private readonly materialRepository: Repository<Material>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
+    @InjectRepository(ProductMaterial)
+    private readonly productMaterialRepository: Repository<ProductMaterial>,
     @InjectRepository(Order)
     private readonly orderRepository: Repository<Order>,
     @InjectRepository(OrderMaterial)
     private readonly orderMaterialRepository: Repository<OrderMaterial>,
     @InjectRepository(Payment)
     private readonly paymentRepository: Repository<Payment>,
-    @InjectRepository(Project)
-    private readonly projectRepository: Repository<Project>,
     @InjectRepository(File)
     private readonly fileRepository: Repository<File>,
     @InjectRepository(DictType)
@@ -187,10 +192,11 @@ export class CodeExecutorService {
         customerRepository: this.customerRepository,
         customerFollowRepository: this.customerFollowRepository,
         materialRepository: this.materialRepository,
+        productRepository: this.productRepository,
+        productMaterialRepository: this.productMaterialRepository,
         orderRepository: this.orderRepository,
         orderMaterialRepository: this.orderMaterialRepository,
         paymentRepository: this.paymentRepository,
-        projectRepository: this.projectRepository,
         fileRepository: this.fileRepository,
         dictTypeRepository: this.dictTypeRepository,
         dictDataRepository: this.dictDataRepository,
@@ -256,6 +262,7 @@ export class CodeExecutorService {
         clearTimeout,
         clearInterval,
         Promise,
+        dayjs, // 注入 dayjs
         // 可以添加其他安全的全局对象
       };
 
