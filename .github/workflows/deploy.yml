@@ -104,6 +104,10 @@ jobs:
           script: |
             cd /app/erp-core
             
+            # 设置环境变量
+            export ACR_REGISTRY="${{ secrets.ACR_REGISTRY }}"
+            export ACR_NAMESPACE="${{ secrets.ACR_NAMESPACE }}"
+            
             # 登录 ACR
             docker login --username=${{ secrets.ACR_USERNAME }} \
                         --password=${{ secrets.ACR_PASSWORD }} \
