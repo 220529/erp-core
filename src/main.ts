@@ -1,3 +1,4 @@
+import * as nodeCrypto from 'node:crypto';
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
@@ -5,6 +6,21 @@ import { AppModule } from './app.module';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
+
+// Ensure `globalThis.crypto` exists so dependencies like TypeORM can call `crypto.randomUUID()`
+if (
+  !globalThis.crypto ||
+  typeof globalThis.crypto.randomUUID !== 'function'
+) {
+  const fallback = (nodeCrypto.webcrypto ??
+    nodeCrypto) as unknown as Crypto;
+  (globalThis as Record<string, unknown>).crypto = fallback;
+
+  if (typeof fallback.randomUUID !== 'function') {
+    (fallback as unknown as { randomUUID: () => string }).randomUUID =
+      nodeCrypto.randomUUID.bind(nodeCrypto);
+  }
+}
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
