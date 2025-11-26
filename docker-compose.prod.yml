@@ -5,8 +5,9 @@ services:
     image: ${ACR_REGISTRY}/${ACR_NAMESPACE}/erp-core:{{IMAGE_TAG}}
     container_name: erp-core
     restart: unless-stopped
-    ports:
-      - "3009:3009"
+    # 不对外暴露端口，只在 erp-db-network 内部通信
+    expose:
+      - "3009"
     env_file:
       - .env.prod
     volumes:
