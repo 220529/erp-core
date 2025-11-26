@@ -32,7 +32,7 @@ jobs:
           DB_USERNAME=erp_user
           DB_PASSWORD=${{ secrets.DB_USER_PASSWORD }}
           DB_DATABASE=erp_core
-          DB_SYNCHRONIZE=false
+          DB_SYNCHRONIZE=true
           DB_LOGGING=false
           
           # Redis 配置 (使用容器名称)
