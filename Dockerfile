@@ -15,7 +15,7 @@ RUN pnpm install --frozen-lockfile
 # 复制源代码
 COPY . .
 
-# 构建应用
+# 构建应用 (包含 migrations)
 RUN pnpm build
 
 # 生产阶段
@@ -35,6 +35,9 @@ RUN pnpm install --prod --frozen-lockfile
 # 从构建阶段复制构建产物
 COPY --from=builder /app/dist ./dist
 
+# 复制 migration 运行脚本
+COPY scripts/run-migrations.js ./scripts/
+
 # 创建必要的目录
 RUN mkdir -p /app/uploads /app/logs
 
@@ -45,5 +48,5 @@ EXPOSE 3009
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3009/api', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# 启动命令 (使用 DB_SYNCHRONIZE=true 自动同步表结构)
-CMD ["node", "dist/main.js"]
+# 启动命令 (先运行迁移，再启动应用)
+CMD ["sh", "-c", "node scripts/run-migrations.js && node dist/main.js"]

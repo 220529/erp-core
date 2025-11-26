@@ -1,0 +1,2 @@
+# 此目录用于存放数据库迁移文件
+# 使用 pnpm migration:generate 自动生成迁移
