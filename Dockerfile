@@ -44,9 +44,9 @@ RUN mkdir -p /app/uploads /app/logs
 # 暴露端口
 EXPOSE 3009
 
-# 健康检查
+# 健康检查 - 使用 /api/dict/type 端点
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
-  CMD node -e "require('http').get('http://localhost:3009/api', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
+  CMD node -e "require('http').get('http://localhost:3009/api/dict/type', (r) => {process.exit(r.statusCode === 200 || r.statusCode === 401 ? 0 : 1)})"
 
 # 启动命令 (先运行迁移，再启动应用)
 CMD ["sh", "-c", "node scripts/run-migrations.js && node dist/main.js"]
