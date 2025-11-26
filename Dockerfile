@@ -45,5 +45,5 @@ EXPOSE 3009
 HEALTHCHECK --interval=30s --timeout=3s --start-period=40s --retries=3 \
   CMD node -e "require('http').get('http://localhost:3009/api', (r) => {process.exit(r.statusCode === 200 ? 0 : 1)})"
 
-# 启动命令 (先运行迁移,再启动应用)
-CMD ["sh", "-c", "pnpm migration:run && pnpm start:prod"]
+# 启动命令 (使用 DB_SYNCHRONIZE=true 自动同步表结构)
+CMD ["node", "dist/main.js"]
