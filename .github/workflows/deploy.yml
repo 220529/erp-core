@@ -20,6 +20,10 @@ jobs:
       - name: Create .env.prod
         run: |
           cat > .env.prod << EOF
+          # ACR 配置（供 docker-compose 使用）
+          ACR_REGISTRY=${{ secrets.ACR_REGISTRY }}
+          ACR_NAMESPACE=${{ secrets.ACR_NAMESPACE }}
+
           # 应用配置
           NODE_ENV=production
           PORT=3009
@@ -103,32 +107,28 @@ jobs:
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
             cd /app/erp-core
-            
-            # 设置环境变量
-            export ACR_REGISTRY="${{ secrets.ACR_REGISTRY }}"
-            export ACR_NAMESPACE="${{ secrets.ACR_NAMESPACE }}"
-            
+
             # 登录 ACR
             docker login --username=${{ secrets.ACR_USERNAME }} \
                         --password=${{ secrets.ACR_PASSWORD }} \
                         ${{ secrets.ACR_REGISTRY }}
-            
+
             # 拉取最新镜像
-            docker compose -f docker-compose.prod.yml pull
-            
+            docker compose --env-file .env.prod -f docker-compose.prod.yml pull
+
             # 停止旧容器
-            docker compose -f docker-compose.prod.yml down || true
-            
+            docker compose --env-file .env.prod -f docker-compose.prod.yml down || true
+
             # 启动新容器
-            docker compose -f docker-compose.prod.yml up -d
-            
+            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
+
             # 等待容器启动
             sleep 10
-            
+
             # 查看状态
-            docker compose -f docker-compose.prod.yml ps
-            
+            docker compose --env-file .env.prod -f docker-compose.prod.yml ps
+
             # 查看日志
-            docker compose -f docker-compose.prod.yml logs --tail=50
-            
+            docker compose --env-file .env.prod -f docker-compose.prod.yml logs --tail=50
+
             echo "✅ erp-core 部署完成!"
