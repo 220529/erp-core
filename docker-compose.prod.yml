@@ -2,7 +2,7 @@
 
 services:
   erp-core:
-    image: ${ACR_REGISTRY}/${ACR_NAMESPACE}/erp-core:{{IMAGE_TAG}}
+    image: ${ACR_REGISTRY}/${ACR_NAMESPACE}/erp-core:${IMAGE_TAG:-latest}
     container_name: erp-core
     restart: unless-stopped
     # 不对外暴露端口，只在 erp-db-network 内部通信

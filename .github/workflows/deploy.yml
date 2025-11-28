@@ -80,13 +80,12 @@ jobs:
                      ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/erp-core:latest
           docker push ${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/erp-core:latest
 
-      # 5. 准备部署文件
-      - name: Prepare deployment files
+      # 5. 在 .env.prod 中添加 IMAGE_TAG
+      - name: Add IMAGE_TAG to .env.prod
         env:
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          # 替换 docker-compose.prod.yml 中的镜像标签
-          sed -i "s|{{IMAGE_TAG}}|$IMAGE_TAG|g" docker-compose.prod.yml
+          echo "IMAGE_TAG=$IMAGE_TAG" >> .env.prod
 
       # 6. 上传配置文件到服务器
       - name: Upload files to server
