@@ -79,51 +79,87 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          command_timeout: 20m
+          command_timeout: 30m
           script: |
+            set -e  # 遇到错误立即退出
+            
+            echo "========================================="
+            echo "开始部署 erp-core"
+            echo "========================================="
+            
             cd /app/erp-core-build
-
+            
             # 登录 ACR (使用内网地址)
+            echo "🔐 登录 ACR..."
             docker login --username=${{ secrets.ACR_USERNAME }} \
                         --password=${{ secrets.ACR_PASSWORD }} \
                         ${{ secrets.ACR_REGISTRY_VPC }}
-
-            # 构建镜像
+            
+            # 设置镜像标签
             IMAGE_TAG=${{ github.sha }}
-            echo "Building image with tag: $IMAGE_TAG"
-            docker build -t ${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:$IMAGE_TAG .
-
-            # 推送镜像到 ACR (内网，速度快)
-            docker push ${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:$IMAGE_TAG
-
+            FULL_IMAGE_NAME=${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:$IMAGE_TAG
+            echo "📦 镜像标签: $IMAGE_TAG"
+            echo "📦 完整镜像名: $FULL_IMAGE_NAME"
+            
+            # 构建镜像
+            echo "🔨 开始构建镜像..."
+            docker build --progress=plain -t $FULL_IMAGE_NAME . 2>&1 | tee build.log
+            
+            if [ $? -eq 0 ]; then
+                echo "✅ 镜像构建成功"
+            else
+                echo "❌ 镜像构建失败，查看日志文件 build.log"
+                tail -n 100 build.log
+                exit 1
+            fi
+            
+            # 推送镜像到 ACR
+            echo "📤 推送镜像到 ACR..."
+            docker push $FULL_IMAGE_NAME
+            
             # 同时推送 latest 标签
-            docker tag ${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:$IMAGE_TAG \
+            echo "🏷️  标记并推送 latest 标签..."
+            docker tag $FULL_IMAGE_NAME \
                        ${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:latest
             docker push ${{ secrets.ACR_REGISTRY_VPC }}/${{ secrets.ACR_NAMESPACE }}/erp-core:latest
-
+            
             # 复制配置文件到部署目录
+            echo "📋 复制配置文件..."
             cp docker-compose.prod.yml /app/erp-core/
             cp .env.prod /app/erp-core/
-
+            
             # 部署
+            echo "🚀 开始部署..."
             cd /app/erp-core
-
+            
             # 拉取最新镜像
+            echo "📥 拉取最新镜像..."
             docker compose --env-file .env.prod -f docker-compose.prod.yml pull
-
+            
             # 停止旧容器
+            echo "⏹️  停止旧容器..."
             docker compose --env-file .env.prod -f docker-compose.prod.yml down || true
-
+            
             # 启动新容器
+            echo "▶️  启动新容器..."
             docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
-
+            
             # 等待容器启动
+            echo "⏳ 等待容器启动..."
             sleep 10
-
+            
             # 查看状态
+            echo "📊 查看容器状态..."
             docker compose --env-file .env.prod -f docker-compose.prod.yml ps
-
-            # 清理构建目录的镜像缓存 (可选，节省磁盘空间)
-            # docker image prune -f
-
+            
+            # 查看容器日志（最后20行）
+            echo "📜 查看容器日志..."
+            docker compose --env-file .env.prod -f docker-compose.prod.yml logs --tail=20
+            
+            # 清理构建目录的悬空镜像
+            echo "🧹 清理悬空镜像..."
+            docker image prune -f || true
+            
+            echo "========================================="
             echo "✅ erp-core 部署完成!"
+            echo "========================================="
