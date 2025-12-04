@@ -33,7 +33,7 @@ jobs:
           DB_USERNAME=erp_user
           DB_PASSWORD=${{ secrets.DB_USER_PASSWORD }}
           DB_DATABASE=erp_core
-          DB_SYNCHRONIZE=true
+          DB_SYNCHRONIZE=false
           DB_LOGGING=false
 
           # Redis 配置
@@ -91,8 +91,12 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
           script: |
+            set -e # 如果任何命令失败，立即退出脚本
             cd /app/erp-core
-            docker login -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }} ${{ secrets.ACR_REGISTRY_VPC }}
-            docker compose --env-file .env.prod -f docker-compose.prod.yml pull
-            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d
+            export IMAGE_TAG=${{ github.sha }}
+            docker login -u ${{ secrets.ACR_USERNAME }} -p ${{ secrets.ACR_PASSWORD }} ${{ secrets.ACR_REGISTRY }}
+            docker compose --env-file .env.prod -f docker-compose.prod.yml pull erp-core
+            docker compose --env-file .env.prod -f docker-compose.prod.yml up -d --remove-orphans
             docker image prune -f
+            # 清理旧的 erp-core 镜像，保留 latest 和当前 tag
+            docker images --filter=reference='${{ secrets.ACR_REGISTRY }}/${{ secrets.ACR_NAMESPACE }}/erp-core' --format '{{.ID}} {{.Tag}}' | grep -v 'latest' | grep -v "${IMAGE_TAG}" | awk '{print $1}' | xargs --no-run-if-empty docker rmi || true

@@ -1,4 +1,6 @@
 import { Module } from '@nestjs/common';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
@@ -13,6 +15,13 @@ import { DictModule } from './modules/dict/dict.module';
 
 @Module({
   imports: [
+    // 限流配置：防止暴力攻击
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000, // 时间窗口：60秒
+        limit: 100, // 限制：100次请求
+      },
+    ]),
     ConfigModule,
     DatabaseModule,
     AuthModule,
@@ -25,5 +34,12 @@ import { DictModule } from './modules/dict/dict.module';
     PaymentsModule,
     DictModule,
   ],
+  providers: [
+    // 全局限流守卫
+    {
+      provide: APP_GUARD,
+      useClass: ThrottlerGuard,
+    },
+  ],
 })
-export class AppModule {}
+export class AppModule { }
