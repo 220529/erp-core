@@ -13,6 +13,7 @@ import { ProductsModule } from './modules/products/products.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { DictModule } from './modules/dict/dict.module';
 import { FileModule } from './modules/file/file.module';
+import { HealthController } from './health.controller';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { FileModule } from './modules/file/file.module';
     DictModule,
     FileModule,
   ],
+  controllers: [HealthController],
   providers: [
     // 全局限流守卫
     {
@@ -44,4 +46,4 @@ import { FileModule } from './modules/file/file.module';
     },
   ],
 })
-export class AppModule { }
+export class AppModule {}
