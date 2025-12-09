@@ -12,6 +12,7 @@ import { MaterialsModule } from './modules/materials/materials.module';
 import { ProductsModule } from './modules/products/products.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { DictModule } from './modules/dict/dict.module';
+import { FileModule } from './modules/file/file.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { DictModule } from './modules/dict/dict.module';
     ProductsModule,
     PaymentsModule,
     DictModule,
+    FileModule,
   ],
   providers: [
     // 全局限流守卫

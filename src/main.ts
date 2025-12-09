@@ -51,7 +51,7 @@ async function bootstrap() {
     .addTag('materials', '材料管理')
     .addTag('products', '产品套餐管理')
     .addTag('payments', '收款管理')
-    .addTag('files', '文件管理')
+    .addTag('file', '文件管理')
     .build();
 
   const document = SwaggerModule.createDocument(app, config);
@@ -63,7 +63,7 @@ async function bootstrap() {
 
   console.log(`
     🚀 ERP Core API 启动成功
-    📝 API 文档: http://localhost:${port}/api-docs
+    📝 API 文档: http://localhost:${port}/docs
     🌐 应用地址: http://localhost:${port}/api
   `);
 }
