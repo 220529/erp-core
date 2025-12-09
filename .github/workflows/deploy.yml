@@ -53,6 +53,12 @@ jobs:
           # 日志配置
           LOG_LEVEL=warn
           LOG_DIR=./logs
+
+          # 阿里云 OSS 配置
+          OSS_REGION=${{ secrets.OSS_REGION }}
+          OSS_ACCESS_KEY_ID=${{ secrets.OSS_ACCESS_KEY_ID }}
+          OSS_ACCESS_KEY_SECRET=${{ secrets.OSS_ACCESS_KEY_SECRET }}
+          OSS_BUCKET=${{ secrets.OSS_BUCKET }}
           EOF
 
       - name: Login to ACR
@@ -81,7 +87,7 @@ jobs:
           host: ${{ secrets.SSH_HOST }}
           username: ${{ secrets.SSH_USERNAME }}
           password: ${{ secrets.SSH_PASSWORD }}
-          source: ".env.prod,docker-compose.prod.yml"
+          source: '.env.prod,docker-compose.prod.yml'
           target: /app/erp-core/
 
       - name: Deploy

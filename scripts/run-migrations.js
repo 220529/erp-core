@@ -17,6 +17,7 @@ async function runMigrations() {
         database: process.env.DB_DATABASE || 'erp_core',
         entities: [path.join(__dirname, '../dist/**/*.entity.js')],
         migrations: [path.join(__dirname, '../dist/migrations/*.js')],
+        migrationsTableName: 'typeorm_migrations',
         synchronize: false,
     });
 

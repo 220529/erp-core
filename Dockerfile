@@ -65,12 +65,14 @@ ENV NODE_ENV=production
 # 从生产依赖阶段复制 node_modules
 COPY --from=prod-deps /app/node_modules ./node_modules
 
-# 从构建阶段复制构建产物
+# 从构建阶段复制构建产物（包含编译后的 migrations）
 COPY --from=builder /app/dist ./dist
 
 # 复制必要的文件
 COPY package.json ./
 COPY scripts/run-migrations.js ./scripts/
+
+# 复制迁移文件（编译后的 JS 已在 dist/migrations 中）
 
 # 创建必要的目录
 RUN mkdir -p /app/uploads /app/logs && \
