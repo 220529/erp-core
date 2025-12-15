@@ -96,7 +96,7 @@ export class ConstantsController {
   getCustomerStatuses() {
     return {
       data: [
-        { label: '线索', value: CustomerStatus.LEAD },
+        { label: '新客户', value: CustomerStatus.NEW },
         { label: '已量房', value: CustomerStatus.MEASURED },
         { label: '已报价', value: CustomerStatus.QUOTED },
         { label: '已签约', value: CustomerStatus.SIGNED },

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { APP_GUARD } from '@nestjs/core';
+import { APP_GUARD, APP_INTERCEPTOR } from '@nestjs/core';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
@@ -13,6 +13,9 @@ import { ProductsModule } from './modules/products/products.module';
 import { PaymentsModule } from './modules/payments/payments.module';
 import { DictModule } from './modules/dict/dict.module';
 import { FileModule } from './modules/file/file.module';
+import { LogModule } from './modules/log/log.module';
+import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { OperationLogInterceptor } from './common/interceptors/operation-log.interceptor';
 import { HealthController } from './health.controller';
 
 @Module({
@@ -36,6 +39,8 @@ import { HealthController } from './health.controller';
     PaymentsModule,
     DictModule,
     FileModule,
+    LogModule,
+    SchedulerModule,
   ],
   controllers: [HealthController],
   providers: [
@@ -43,6 +48,11 @@ import { HealthController } from './health.controller';
     {
       provide: APP_GUARD,
       useClass: ThrottlerGuard,
+    },
+    // 全局操作日志拦截器
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: OperationLogInterceptor,
     },
   ],
 })

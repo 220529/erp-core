@@ -8,15 +8,17 @@ import {
   Param,
   Query,
   UseGuards,
-  Request,
   ParseIntPipe,
+  Res,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
+import type { Response } from 'express';
 import { CustomersService } from './customers.service';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { QueryCustomerDto } from './dto/query-customer.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 
 @ApiTags('customers')
 @Controller('customers')
@@ -27,8 +29,16 @@ export class CustomersController {
 
   @Post()
   @ApiOperation({ summary: '创建客户' })
-  create(@Body() createCustomerDto: CreateCustomerDto, @Request() req) {
+  @OperationLog({ module: 'customer', action: 'create', description: '创建客户' })
+  create(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customersService.create(createCustomerDto);
+  }
+
+  @Get('export')
+  @ApiOperation({ summary: '导出客户列表' })
+  @OperationLog({ module: 'customer', action: 'export', description: '导出客户列表' })
+  async export(@Query() query: QueryCustomerDto, @Res() res: Response) {
+    return this.customersService.export(res, query);
   }
 
   @Get()
@@ -45,6 +55,7 @@ export class CustomersController {
 
   @Put(':id')
   @ApiOperation({ summary: '更新客户' })
+  @OperationLog({ module: 'customer', action: 'update', description: '更新客户' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -54,6 +65,7 @@ export class CustomersController {
 
   @Delete(':id')
   @ApiOperation({ summary: '删除客户' })
+  @OperationLog({ module: 'customer', action: 'delete', description: '删除客户' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.customersService.remove(id);
     return { message: '删除成功' };

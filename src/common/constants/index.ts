@@ -13,7 +13,7 @@ export enum UserRole {
  * 客户状态枚举
  */
 export enum CustomerStatus {
-  LEAD = 'lead', // 线索
+  NEW = 'new', // 新客户
   MEASURED = 'measured', // 已量房
   QUOTED = 'quoted', // 已报价
   SIGNED = 'signed', // 已签约

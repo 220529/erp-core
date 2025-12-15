@@ -1,16 +1,19 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Like } from 'typeorm';
+import { Repository } from 'typeorm';
+import { Response } from 'express';
 import { Customer } from '../../entities/customer.entity';
 import { CreateCustomerDto } from './dto/create-customer.dto';
 import { UpdateCustomerDto } from './dto/update-customer.dto';
 import { QueryCustomerDto } from './dto/query-customer.dto';
+import { ExportService } from '../../common/services/export.service';
 
 @Injectable()
 export class CustomersService {
   constructor(
     @InjectRepository(Customer)
     private readonly customerRepository: Repository<Customer>,
+    private readonly exportService: ExportService,
   ) {}
 
   async create(createCustomerDto: CreateCustomerDto): Promise<Customer> {
@@ -79,6 +82,34 @@ export class CustomersService {
   async remove(id: number): Promise<void> {
     const customer = await this.findOne(id);
     await this.customerRepository.remove(customer);
+  }
+
+  /**
+   * 导出客户列表（使用实体装饰器配置）
+   */
+  async export(res: Response, query: QueryCustomerDto): Promise<void> {
+    const { keyword, stage, salesId } = query;
+
+    const queryBuilder = this.customerRepository.createQueryBuilder('customer');
+
+    if (keyword) {
+      queryBuilder.where(
+        'customer.name LIKE :keyword OR customer.mobile LIKE :keyword',
+        { keyword: `%${keyword}%` },
+      );
+    }
+    if (stage) {
+      queryBuilder.andWhere('customer.status = :stage', { stage });
+    }
+    if (salesId) {
+      queryBuilder.andWhere('customer.salesId = :salesId', { salesId });
+    }
+
+    queryBuilder.orderBy('customer.createdAt', 'DESC');
+    const data = await queryBuilder.getMany();
+
+    const filename = `客户列表_${new Date().toISOString().slice(0, 10)}`;
+    await this.exportService.exportFromEntity(res, Customer, data, filename);
   }
 }
 
