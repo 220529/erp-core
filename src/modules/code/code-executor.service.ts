@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { randomBytes } from 'crypto';
 import * as vm from 'vm';
-import * as dayjs from 'dayjs';
+import dayjs from 'dayjs';
 import {
   User,
   Company,

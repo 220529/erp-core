@@ -17,6 +17,7 @@ import { FileModule } from './modules/file/file.module';
 import { LogModule } from './modules/log/log.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
 import { SystemModule } from './modules/system/system.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
 import { OperationLogInterceptor } from './common/interceptors/operation-log.interceptor';
 import { HealthController } from './health.controller';
 
@@ -45,6 +46,7 @@ import { HealthController } from './health.controller';
     LogModule,
     SchedulerModule,
     SystemModule,
+    DashboardModule,
   ],
   controllers: [HealthController],
   providers: [

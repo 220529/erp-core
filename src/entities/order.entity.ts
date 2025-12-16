@@ -25,8 +25,8 @@ export class Order extends BaseEntity {
   @Column({
     type: 'enum',
     enum: OrderStatus,
-    default: OrderStatus.DRAFT,
-    comment: '订单状态: draft-草稿, signed-已签约, in_progress-施工中, completed-已完工, cancelled-已取消',
+    default: OrderStatus.PENDING,
+    comment: '订单状态: pending-待签约, signed-已签约, in_progress-施工中, completed-已完工, voided-已作废',
   })
   status: OrderStatus;
 

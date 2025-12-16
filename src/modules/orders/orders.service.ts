@@ -20,7 +20,7 @@ export class OrdersService {
     const order = this.orderRepository.create({
       ...createOrderDto,
       orderNo,
-      status: OrderStatus.DRAFT,
+      status: OrderStatus.PENDING,
       paidAmount: 0, // 初始已收金额总是0
     });
     

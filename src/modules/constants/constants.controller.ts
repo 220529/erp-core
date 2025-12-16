@@ -44,11 +44,11 @@ export class ConstantsController {
   getOrderStatuses() {
     return {
       data: [
-        { label: '草稿', value: OrderStatus.DRAFT },
+        { label: '待签约', value: OrderStatus.PENDING },
         { label: '已签约', value: OrderStatus.SIGNED },
         { label: '施工中', value: OrderStatus.IN_PROGRESS },
         { label: '已完工', value: OrderStatus.COMPLETED },
-        { label: '已取消', value: OrderStatus.CANCELLED },
+        { label: '已作废', value: OrderStatus.VOIDED },
       ],
     };
   }

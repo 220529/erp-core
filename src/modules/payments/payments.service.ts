@@ -32,7 +32,9 @@ export class PaymentsService {
 
     const queryBuilder = this.paymentRepository
       .createQueryBuilder('payment')
-      .leftJoinAndSelect('payment.order', 'order');
+      .leftJoinAndSelect('payment.order', 'order')
+      .leftJoin('users', 'creator', 'creator.id = payment.created_by')
+      .addSelect('creator.name', 'creatorName');
 
     if (keyword) {
       queryBuilder.where('payment.paymentNo LIKE :keyword', { keyword: `%${keyword}%` });
@@ -51,7 +53,15 @@ export class PaymentsService {
       .take(pageSize)
       .orderBy('payment.createdAt', 'DESC');
 
-    const [list, total] = await queryBuilder.getManyAndCount();
+    const { entities, raw } = await queryBuilder.getRawAndEntities();
+
+    // 合并创建人姓名到实体
+    const list = entities.map((entity, index) => ({
+      ...entity,
+      createdByName: raw[index]?.creatorName || null,
+    }));
+
+    const total = await queryBuilder.getCount();
 
     return {
       list,

@@ -33,11 +33,11 @@ export enum FollowType {
  * 订单状态枚举
  */
 export enum OrderStatus {
-  DRAFT = 'draft', // 草稿
+  PENDING = 'pending', // 待签约
   SIGNED = 'signed', // 已签约
   IN_PROGRESS = 'in_progress', // 施工中
   COMPLETED = 'completed', // 已完工
-  CANCELLED = 'cancelled', // 已取消
+  VOIDED = 'voided', // 已作废
 }
 
 /**
