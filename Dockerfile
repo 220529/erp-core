@@ -59,8 +59,15 @@ FROM node:22-alpine
 
 WORKDIR /app
 
+# 设置时区为中国时区
+RUN apk add --no-cache tzdata && \
+    cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+    echo "Asia/Shanghai" > /etc/timezone && \
+    apk del tzdata
+
 # 设置 NODE_ENV
 ENV NODE_ENV=production
+ENV TZ=Asia/Shanghai
 
 # 从生产依赖阶段复制 node_modules
 COPY --from=prod-deps /app/node_modules ./node_modules
