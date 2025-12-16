@@ -4,6 +4,7 @@ import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { ConfigModule } from './config/config.module';
 import { DatabaseModule } from './database/database.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { PermissionModule } from './modules/permission/permission.module';
 import { CodeModule } from './modules/code/code.module';
 import { ConstantsModule } from './modules/constants/constants.module';
 import { CustomersModule } from './modules/customers/customers.module';
@@ -15,6 +16,7 @@ import { DictModule } from './modules/dict/dict.module';
 import { FileModule } from './modules/file/file.module';
 import { LogModule } from './modules/log/log.module';
 import { SchedulerModule } from './modules/scheduler/scheduler.module';
+import { SystemModule } from './modules/system/system.module';
 import { OperationLogInterceptor } from './common/interceptors/operation-log.interceptor';
 import { HealthController } from './health.controller';
 
@@ -30,6 +32,7 @@ import { HealthController } from './health.controller';
     ConfigModule,
     DatabaseModule,
     AuthModule,
+    PermissionModule,
     CodeModule,
     ConstantsModule,
     CustomersModule,
@@ -41,6 +44,7 @@ import { HealthController } from './health.controller';
     FileModule,
     LogModule,
     SchedulerModule,
+    SystemModule,
   ],
   controllers: [HealthController],
   providers: [

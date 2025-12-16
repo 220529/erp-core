@@ -16,34 +16,40 @@ import { CreateOrderDto } from './dto/create-order.dto';
 import { UpdateOrderDto } from './dto/update-order.dto';
 import { QueryOrderDto } from './dto/query-order.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { PermissionGuard } from '../../common/guards/permission.guard';
+import { RequirePermission } from '../../common/decorators/require-permission.decorator';
 
 @ApiTags('orders')
 @Controller('orders')
-@UseGuards(JwtAuthGuard)
+@UseGuards(JwtAuthGuard, PermissionGuard)
 @ApiBearerAuth()
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
   @Post()
   @ApiOperation({ summary: '创建订单' })
+  @RequirePermission('order:create')
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
   }
 
   @Get()
   @ApiOperation({ summary: '查询订单列表' })
+  @RequirePermission('order:list')
   findAll(@Query() query: QueryOrderDto) {
     return this.ordersService.findAll(query);
   }
 
   @Get(':id')
   @ApiOperation({ summary: '查询订单详情' })
+  @RequirePermission('order:list')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.ordersService.findOne(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: '更新订单' })
+  @RequirePermission('order:update')
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateOrderDto: UpdateOrderDto,
@@ -53,6 +59,7 @@ export class OrdersController {
 
   @Delete(':id')
   @ApiOperation({ summary: '删除订单' })
+  @RequirePermission('order:delete')
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.ordersService.remove(id);
     return { message: '删除成功' };

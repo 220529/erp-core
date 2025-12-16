@@ -34,6 +34,16 @@ export class AuthController {
     return userInfo;
   }
 
+  @Post('logout')
+  @UseGuards(JwtAuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: '退出登录' })
+  async logout() {
+    // JWT 是无状态的，服务端不需要做任何操作
+    // 如果需要实现 token 黑名单，可以在这里处理
+    return { success: true, message: '退出成功' };
+  }
+
   @Get('access-secret')
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()

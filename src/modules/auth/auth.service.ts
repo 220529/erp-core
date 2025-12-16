@@ -1,4 +1,4 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable, UnauthorizedException, Inject, forwardRef } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,6 +6,7 @@ import * as bcrypt from 'bcryptjs';
 import { User } from '../../entities/user.entity';
 import { IJwtPayload } from '../../common/interfaces/response.interface';
 import { LoginDto, RegisterDto } from './dto/auth.dto';
+import { PermissionService } from '../permission/permission.service';
 
 @Injectable()
 export class AuthService {
@@ -13,6 +14,8 @@ export class AuthService {
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
     private readonly jwtService: JwtService,
+    @Inject(forwardRef(() => PermissionService))
+    private readonly permissionService: PermissionService,
   ) {}
 
   /**
@@ -52,12 +55,20 @@ export class AuthService {
 
     const token = this.jwtService.sign(payload);
 
+    // 获取用户权限和菜单
+    const [permissions, menus] = await Promise.all([
+      this.permissionService.getUserPermissions(user.role),
+      this.permissionService.getUserMenus(user.role),
+    ]);
+
     // 移除敏感信息
     const { password: _, ...userInfo } = user;
 
     return {
       token,
       user: userInfo,
+      permissions,
+      menus,
     };
   }
 
