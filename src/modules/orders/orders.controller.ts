@@ -20,6 +20,7 @@ import { QueryOrderDto } from './dto/query-order.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionGuard } from '../../common/guards/permission.guard';
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 import { OrderMaterial } from '../../entities/order-material.entity';
 
 @ApiTags('orders')
@@ -36,6 +37,7 @@ export class OrdersController {
   @Post()
   @ApiOperation({ summary: '创建订单' })
   @RequirePermission('order:create')
+  @OperationLog({ action: '创建订单', module: 'order', targetIdParam: 'customerId' })
   create(@Body() createOrderDto: CreateOrderDto) {
     return this.ordersService.create(createOrderDto);
   }
@@ -57,6 +59,7 @@ export class OrdersController {
   @Put(':id')
   @ApiOperation({ summary: '更新订单' })
   @RequirePermission('order:update')
+  @OperationLog({ action: '更新订单', module: 'order' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateOrderDto: UpdateOrderDto,
@@ -67,6 +70,7 @@ export class OrdersController {
   @Delete(':id')
   @ApiOperation({ summary: '删除订单' })
   @RequirePermission('order:delete')
+  @OperationLog({ action: '删除订单', module: 'order' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.ordersService.remove(id);
     return { message: '删除成功' };

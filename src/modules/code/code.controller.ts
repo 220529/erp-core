@@ -19,6 +19,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { RolesGuard } from '../auth/guards/roles.guard';
 import { Roles } from '../auth/decorators/roles.decorator';
 import { Public } from '../auth/decorators/public.decorator';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 import { UserRole } from '../../common/constants';
 import {
   ExecuteFlowDto,
@@ -40,6 +41,12 @@ export class CodeController {
   @Post('run/:flowKey')
   @ApiOperation({ summary: '执行代码流程' })
   @ApiParam({ name: 'flowKey', description: '流程唯一标识key' })
+  @OperationLog({
+    action: '执行代码流程',
+    module: 'codeflow',
+    targetIdParam: 'flowKey',
+    description: (req) => `执行流程: ${req.params.flowKey}`,
+  })
   async executeFlow(
     @Param('flowKey') flowKey: string,
     @Body() executeFlowDto: ExecuteFlowDto,

@@ -18,6 +18,7 @@ import { QueryMaterialDto } from './dto/query-material.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionGuard } from '../../common/guards/permission.guard';
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 
 @ApiTags('materials')
 @Controller('materials')
@@ -29,6 +30,7 @@ export class MaterialsController {
   @Post()
   @ApiOperation({ summary: '创建物料' })
   @RequirePermission('material:create')
+  @OperationLog({ action: '创建物料', module: 'material' })
   create(@Body() createMaterialDto: CreateMaterialDto) {
     return this.materialsService.create(createMaterialDto);
   }
@@ -50,6 +52,7 @@ export class MaterialsController {
   @Put(':id')
   @ApiOperation({ summary: '更新物料' })
   @RequirePermission('material:update')
+  @OperationLog({ action: '更新物料', module: 'material' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateMaterialDto: UpdateMaterialDto,
@@ -60,6 +63,7 @@ export class MaterialsController {
   @Delete(':id')
   @ApiOperation({ summary: '删除物料' })
   @RequirePermission('material:delete')
+  @OperationLog({ action: '删除物料', module: 'material' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.materialsService.remove(id);
     return { message: '删除成功' };

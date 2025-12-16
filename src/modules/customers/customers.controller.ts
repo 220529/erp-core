@@ -32,7 +32,7 @@ export class CustomersController {
   @Post()
   @ApiOperation({ summary: '创建客户' })
   @RequirePermission('customer:create')
-  @OperationLog({ module: 'customer', action: 'create', description: '创建客户' })
+  @OperationLog({ action: '创建客户', module: 'customer' })
   create(@Body() createCustomerDto: CreateCustomerDto) {
     return this.customersService.create(createCustomerDto);
   }
@@ -40,7 +40,7 @@ export class CustomersController {
   @Get('export')
   @ApiOperation({ summary: '导出客户列表' })
   @RequirePermission('customer:export')
-  @OperationLog({ module: 'customer', action: 'export', description: '导出客户列表' })
+  @OperationLog({ action: '导出客户', module: 'customer', recordRequest: false })
   async export(@Query() query: QueryCustomerDto, @Res() res: Response) {
     return this.customersService.export(res, query);
   }
@@ -62,7 +62,7 @@ export class CustomersController {
   @Put(':id')
   @ApiOperation({ summary: '更新客户' })
   @RequirePermission('customer:update')
-  @OperationLog({ module: 'customer', action: 'update', description: '更新客户' })
+  @OperationLog({ action: '更新客户', module: 'customer' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateCustomerDto: UpdateCustomerDto,
@@ -73,7 +73,7 @@ export class CustomersController {
   @Delete(':id')
   @ApiOperation({ summary: '删除客户' })
   @RequirePermission('customer:delete')
-  @OperationLog({ module: 'customer', action: 'delete', description: '删除客户' })
+  @OperationLog({ action: '删除客户', module: 'customer' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.customersService.remove(id);
     return { message: '删除成功' };

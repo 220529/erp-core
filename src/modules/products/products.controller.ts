@@ -19,6 +19,7 @@ import { CreateProductMaterialDto, UpdateProductMaterialDto } from './dto/produc
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionGuard } from '../../common/guards/permission.guard';
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 
 @ApiTags('products')
 @Controller('products')
@@ -30,6 +31,7 @@ export class ProductsController {
   @Post()
   @ApiOperation({ summary: '创建产品套餐' })
   @RequirePermission('product:create')
+  @OperationLog({ action: '创建套餐', module: 'product' })
   create(@Body() createProductDto: CreateProductDto) {
     return this.productsService.create(createProductDto);
   }
@@ -51,6 +53,7 @@ export class ProductsController {
   @Put(':id')
   @ApiOperation({ summary: '更新产品套餐' })
   @RequirePermission('product:update')
+  @OperationLog({ action: '更新套餐', module: 'product' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
@@ -61,6 +64,7 @@ export class ProductsController {
   @Delete(':id')
   @ApiOperation({ summary: '删除产品套餐' })
   @RequirePermission('product:delete')
+  @OperationLog({ action: '删除套餐', module: 'product' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.productsService.remove(id);
     return { message: '删除成功' };

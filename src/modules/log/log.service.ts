@@ -8,11 +8,16 @@ export interface CreateLogDto {
   username?: string;
   module: string;
   action: string;
+  targetId?: number;
   content?: string;
   ip?: string;
   userAgent?: string;
   method?: string;
   path?: string;
+  requestBody?: string;
+  responseBody?: string;
+  status?: string;
+  errorMsg?: string;
   duration?: number;
 }
 
@@ -78,5 +83,23 @@ export class LogService {
     });
 
     return result.affected || 0;
+  }
+
+  /**
+   * 查询单条日志详情
+   */
+  async findOne(id: number): Promise<Log | null> {
+    return this.logRepository.findOne({ where: { id } });
+  }
+
+  /**
+   * 获取某个业务对象的操作历史
+   */
+  async getTargetHistory(module: string, targetId: number) {
+    return this.logRepository.find({
+      where: { module, targetId },
+      order: { createdAt: 'DESC' },
+      take: 50,
+    });
   }
 }

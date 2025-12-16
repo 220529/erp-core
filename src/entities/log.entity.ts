@@ -9,6 +9,8 @@ import { ApiProperty } from '@nestjs/swagger';
 @Index(['userId'])
 @Index(['module'])
 @Index(['action'])
+@Index(['targetId'])
+@Index(['status'])
 export class Log extends BaseEntity {
   @ApiProperty({ description: '用户ID' })
   @Column({ name: 'user_id', nullable: true, comment: '操作人ID' })
@@ -23,11 +25,15 @@ export class Log extends BaseEntity {
   module: string;
 
   @ApiProperty({ description: '操作类型' })
-  @Column({ length: 20, comment: '操作类型(create/update/delete/view等)' })
+  @Column({ length: 100, comment: '操作类型/名称' })
   action: string;
 
+  @ApiProperty({ description: '业务对象ID' })
+  @Column({ name: 'target_id', nullable: true, comment: '业务对象ID(订单ID/客户ID等)' })
+  targetId: number;
+
   @ApiProperty({ description: '操作内容' })
-  @Column({ type: 'text', nullable: true, comment: '操作详细内容' })
+  @Column({ type: 'text', nullable: true, comment: '操作详细内容/描述' })
   content: string;
 
   @ApiProperty({ description: 'IP地址' })
@@ -45,6 +51,22 @@ export class Log extends BaseEntity {
   @ApiProperty({ description: '请求路径' })
   @Column({ type: 'text', nullable: true, comment: '请求URL路径' })
   path: string;
+
+  @ApiProperty({ description: '请求参数' })
+  @Column({ name: 'request_body', type: 'text', nullable: true, comment: '请求参数JSON' })
+  requestBody: string;
+
+  @ApiProperty({ description: '响应结果' })
+  @Column({ name: 'response_body', type: 'text', nullable: true, comment: '响应结果JSON' })
+  responseBody: string;
+
+  @ApiProperty({ description: '操作状态' })
+  @Column({ length: 20, nullable: true, default: 'success', comment: '操作状态: success/error' })
+  status: string;
+
+  @ApiProperty({ description: '错误信息' })
+  @Column({ name: 'error_msg', type: 'text', nullable: true, comment: '错误信息' })
+  errorMsg: string;
 
   @ApiProperty({ description: '耗时' })
   @Column({ nullable: true, comment: '请求耗时(毫秒)' })

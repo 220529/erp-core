@@ -18,6 +18,7 @@ import { QueryPaymentDto } from './dto/query-payment.dto';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { PermissionGuard } from '../../common/guards/permission.guard';
 import { RequirePermission } from '../../common/decorators/require-permission.decorator';
+import { OperationLog } from '../../common/decorators/operation-log.decorator';
 
 @ApiTags('payments')
 @Controller('payments')
@@ -29,6 +30,7 @@ export class PaymentsController {
   @Post()
   @ApiOperation({ summary: '创建收款记录' })
   @RequirePermission('payment:create')
+  @OperationLog({ action: '创建收款', module: 'payment', targetIdParam: 'orderId' })
   create(@Body() createPaymentDto: CreatePaymentDto) {
     return this.paymentsService.create(createPaymentDto);
   }
@@ -50,6 +52,7 @@ export class PaymentsController {
   @Put(':id')
   @ApiOperation({ summary: '更新收款记录' })
   @RequirePermission('payment:confirm')
+  @OperationLog({ action: '更新收款', module: 'payment' })
   update(
     @Param('id', ParseIntPipe) id: number,
     @Body() updatePaymentDto: UpdatePaymentDto,
@@ -60,6 +63,7 @@ export class PaymentsController {
   @Delete(':id')
   @ApiOperation({ summary: '删除收款记录' })
   @RequirePermission('payment:delete')
+  @OperationLog({ action: '删除收款', module: 'payment' })
   async remove(@Param('id', ParseIntPipe) id: number) {
     await this.paymentsService.remove(id);
     return { message: '删除成功' };
