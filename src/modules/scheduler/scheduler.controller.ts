@@ -1,8 +1,17 @@
-import { Controller, Get, Post, Body, Param, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { LogCleanupTask } from './tasks/log-cleanup.task';
 import { SchedulerService } from './scheduler.service';
+import { TaskExecutionService } from './task-execution.service';
 
 class ManualCleanupDto {
   days?: number;
@@ -16,20 +25,29 @@ export class SchedulerController {
   constructor(
     private readonly logCleanupTask: LogCleanupTask,
     private readonly schedulerService: SchedulerService,
+    private readonly taskExecutionService: TaskExecutionService,
   ) {}
 
   @Get('tasks')
-  @ApiOperation({ summary: '获取所有定时任务状态' })
-  getAllTasks() {
+  @ApiOperation({ summary: '获取所有定时任务状态及最近执行记录' })
+  async getAllTasks() {
     const tasks = this.schedulerService.getAllCronJobs();
-    const lastExecution = this.logCleanupTask.getLastExecution();
+    const executions = await this.taskExecutionService.getLatestByTask();
 
-    return {
-      tasks,
-      executions: {
-        'log-cleanup': lastExecution,
-      },
-    };
+    return { tasks, executions };
+  }
+
+  @Get('tasks/:name/history')
+  @ApiOperation({ summary: '获取任务执行历史' })
+  async getTaskHistory(
+    @Param('name') name: string,
+    @Query('limit') limit?: number,
+  ) {
+    const history = await this.taskExecutionService.getLatest(
+      name,
+      limit || 20,
+    );
+    return { history };
   }
 
   @Post('tasks/:name/stop')

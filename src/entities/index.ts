@@ -17,4 +17,5 @@ export { Menu } from './menu.entity';
 export { RoleMenu } from './role-menu.entity';
 export { Log } from './log.entity';
 export { CodeFlow } from './code-flow.entity';
+export { TaskExecution } from './task-execution.entity';
 
