@@ -135,7 +135,6 @@ export class ConstantsController {
     return {
       data: [
         { label: '系统管理员', value: UserRole.ADMIN },
-        { label: '销售', value: UserRole.SALES },
         { label: '设计师', value: UserRole.DESIGNER },
         { label: '工长', value: UserRole.FOREMAN },
         { label: '财务', value: UserRole.FINANCE },

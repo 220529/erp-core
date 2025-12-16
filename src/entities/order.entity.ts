@@ -62,10 +62,6 @@ export class Order extends BaseEntity {
   })
   costAmount: number;
 
-  @ApiProperty({ description: '销售ID' })
-  @Column({ name: 'sales_id', nullable: true })
-  salesId: number;
-
   @ApiProperty({ description: '设计师ID' })
   @Column({ name: 'designer_id', nullable: true })
   designerId: number;

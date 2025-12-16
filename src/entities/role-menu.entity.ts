@@ -11,7 +11,7 @@ import { Menu } from './menu.entity';
 @Index(['menuId'])
 export class RoleMenu extends BaseEntity {
   @ApiProperty({ description: '角色标识' })
-  @Column({ length: 50, comment: '角色标识(admin/sales/designer/foreman/finance)' })
+  @Column({ length: 50, comment: '角色标识(admin/designer/foreman/finance)' })
   role: string;
 
   @ApiProperty({ description: '菜单ID' })

@@ -16,7 +16,7 @@ import {
 @Entity({ name: 'customers', comment: '客户信息表' })
 @Index(['mobile'])
 @Index(['status'])
-@Index(['salesId'])
+@Index(['designerId'])
 export class Customer extends BaseEntity {
   @ApiProperty({ description: '客户姓名' })
   @Exportable({ header: '客户姓名', width: 15, order: 1 })
@@ -52,10 +52,6 @@ export class Customer extends BaseEntity {
     comment: '客户状态: new-新客户, measured-已量房, quoted-已报价, signed-已签约, completed-已完工',
   })
   status: CustomerStatus;
-
-  @ApiProperty({ description: '销售ID' })
-  @Column({ name: 'sales_id', nullable: true, comment: '负责销售ID' })
-  salesId: number;
 
   @ApiProperty({ description: '设计师ID' })
   @Column({ name: 'designer_id', nullable: true, comment: '负责设计师ID' })

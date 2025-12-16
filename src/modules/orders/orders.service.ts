@@ -28,7 +28,7 @@ export class OrdersService {
   }
 
   async findAll(query: QueryOrderDto) {
-    const { keyword, status, customerId, salesId, page = 1, pageSize = 10 } = query;
+    const { keyword, status, customerId, designerId, page = 1, pageSize = 10 } = query;
 
     const queryBuilder = this.orderRepository
       .createQueryBuilder('order')
@@ -46,8 +46,8 @@ export class OrdersService {
       queryBuilder.andWhere('order.customerId = :customerId', { customerId });
     }
 
-    if (salesId) {
-      queryBuilder.andWhere('order.salesId = :salesId', { salesId });
+    if (designerId) {
+      queryBuilder.andWhere('order.designerId = :designerId', { designerId });
     }
 
     queryBuilder

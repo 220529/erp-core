@@ -8,7 +8,7 @@ import { ApiProperty } from '@nestjs/swagger';
 @Entity({ name: 'roles', comment: '角色表' })
 export class Role extends BaseEntity {
   @ApiProperty({ description: '角色标识' })
-  @Column({ length: 50, unique: true, comment: '角色标识(admin/sales/designer/foreman/finance)' })
+  @Column({ length: 50, unique: true, comment: '角色标识(admin/designer/foreman/finance)' })
   key: string;
 
   @ApiProperty({ description: '角色名称' })

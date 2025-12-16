@@ -3,7 +3,6 @@
  */
 export enum UserRole {
   ADMIN = 'admin', // 系统管理员
-  SALES = 'sales', // 销售
   DESIGNER = 'designer', // 设计师
   FOREMAN = 'foreman', // 工长
   FINANCE = 'finance', // 财务

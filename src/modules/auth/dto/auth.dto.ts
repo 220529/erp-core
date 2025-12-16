@@ -36,7 +36,7 @@ export class RegisterDto {
   @IsNotEmpty()
   mobile: string;
 
-  @ApiPropertyOptional({ description: '角色标识(admin/sales/designer/foreman/finance)' })
+  @ApiPropertyOptional({ description: '角色标识(admin/designer/foreman/finance)' })
   @IsString()
   @IsOptional()
   role?: string;

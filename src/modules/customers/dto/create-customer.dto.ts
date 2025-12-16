@@ -46,10 +46,10 @@ export class CreateCustomerDto {
   @IsOptional()
   stage?: string;
 
-  @ApiPropertyOptional({ description: '销售人员ID', example: 1 })
+  @ApiPropertyOptional({ description: '设计师ID', example: 1 })
   @IsNumber()
   @IsOptional()
-  salesId?: number;
+  designerId?: number;
 
   @ApiPropertyOptional({ description: '备注' })
   @IsString()

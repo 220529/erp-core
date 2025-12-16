@@ -38,7 +38,7 @@ export class User extends BaseEntity {
   @ApiProperty({ description: '角色' })
   @Column({
     length: 50,
-    default: 'sales',
+    default: 'designer',
     comment: '角色标识',
   })
   role: string;

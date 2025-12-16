@@ -22,7 +22,7 @@ export class CustomersService {
   }
 
   async findAll(query: QueryCustomerDto) {
-    const { keyword, stage, salesId, page = 1, pageSize = 10 } = query;
+    const { keyword, stage, designerId, page = 1, pageSize = 10 } = query;
 
     const queryBuilder = this.customerRepository.createQueryBuilder('customer');
 
@@ -39,9 +39,9 @@ export class CustomersService {
       queryBuilder.andWhere('customer.stage = :stage', { stage });
     }
 
-    // 销售人员筛选
-    if (salesId) {
-      queryBuilder.andWhere('customer.salesId = :salesId', { salesId });
+    // 设计师筛选
+    if (designerId) {
+      queryBuilder.andWhere('customer.designerId = :designerId', { designerId });
     }
 
     // 分页
@@ -88,7 +88,7 @@ export class CustomersService {
    * 导出客户列表（使用实体装饰器配置）
    */
   async export(res: Response, query: QueryCustomerDto): Promise<void> {
-    const { keyword, stage, salesId } = query;
+    const { keyword, stage, designerId } = query;
 
     const queryBuilder = this.customerRepository.createQueryBuilder('customer');
 
@@ -101,8 +101,8 @@ export class CustomersService {
     if (stage) {
       queryBuilder.andWhere('customer.status = :stage', { stage });
     }
-    if (salesId) {
-      queryBuilder.andWhere('customer.salesId = :salesId', { salesId });
+    if (designerId) {
+      queryBuilder.andWhere('customer.designerId = :designerId', { designerId });
     }
 
     queryBuilder.orderBy('customer.createdAt', 'DESC');

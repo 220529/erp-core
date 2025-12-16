@@ -13,11 +13,11 @@ export class QueryCustomerDto {
   @IsOptional()
   stage?: string;
 
-  @ApiPropertyOptional({ description: '销售人员ID', example: 1 })
+  @ApiPropertyOptional({ description: '设计师ID', example: 1 })
   @IsNumber()
   @IsOptional()
   @Type(() => Number)
-  salesId?: number;
+  designerId?: number;
 
   @ApiPropertyOptional({ description: '页码', example: 1, default: 1 })
   @IsNumber()

@@ -13,12 +13,7 @@ export class CreateOrderDto {
   @Min(0)
   totalAmount?: number;
 
-  @ApiPropertyOptional({ description: '销售人员ID', example: 1 })
-  @IsNumber()
-  @IsOptional()
-  salesId?: number;
-
-  @ApiPropertyOptional({ description: '设计师ID', example: 2 })
+  @ApiPropertyOptional({ description: '设计师ID', example: 1 })
   @IsNumber()
   @IsOptional()
   designerId?: number;
