@@ -49,6 +49,7 @@ jobs:
           # 文件上传
           UPLOAD_MAX_SIZE=10485760
           UPLOAD_DEST=./uploads
+          UPLOAD_ACCESS_SECRET=${{ secrets.UPLOAD_ACCESS_SECRET }}
 
           # 日志配置
           LOG_LEVEL=warn

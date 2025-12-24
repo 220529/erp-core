@@ -1,4 +1,4 @@
-import { Controller, Post, Body, UseGuards, Get, Request, UnauthorizedException } from '@nestjs/common';
+import { Controller, Post, Body, UseGuards, Get, Request, UnauthorizedException, InternalServerErrorException } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiBearerAuth } from '@nestjs/swagger';
 import { ConfigService } from '@nestjs/config';
 import { AuthService } from './auth.service';
@@ -52,7 +52,7 @@ export class AuthController {
     const accessSecret = this.configService.get<string>('upload.accessSecret');
     
     if (!accessSecret) {
-      throw new UnauthorizedException('服务器未配置 UPLOAD_ACCESS_SECRET，请联系管理员在环境变量中配置');
+      throw new InternalServerErrorException('服务器未配置 UPLOAD_ACCESS_SECRET，请联系管理员在环境变量中配置');
     }
 
     return {
