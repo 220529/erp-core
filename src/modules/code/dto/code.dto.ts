@@ -80,6 +80,16 @@ export class UpdateFlowDto {
   @IsString()
   @IsOptional()
   remark?: string;
+
+  @ApiPropertyOptional({ description: '状态: 1-启用 0-禁用' })
+  @IsNumber()
+  @IsOptional()
+  status?: number;
+
+  @ApiPropertyOptional({ description: '发布时间' })
+  @IsString()
+  @IsOptional()
+  publishedAt?: string;
 }
 
 /**

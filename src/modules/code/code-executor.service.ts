@@ -389,16 +389,18 @@ return {
   /**
    * 更新代码流程
    */
-  async updateFlow(
-    key: string,
-    data: Partial<CodeFlow>,
-  ): Promise<CodeFlow> {
+  async updateFlow(key: string, data: any): Promise<CodeFlow> {
     const flow = await this.codeFlowRepository.findOne({
       where: { key },
     });
 
     if (!flow) {
       throw new NotFoundException(`代码流程 ${key} 不存在`);
+    }
+
+    // 处理 publishedAt 字符串转 Date
+    if (data.publishedAt && typeof data.publishedAt === 'string') {
+      data.publishedAt = new Date(data.publishedAt);
     }
 
     Object.assign(flow, data);
