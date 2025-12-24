@@ -100,6 +100,18 @@ export class CodeController {
     });
   }
 
+  @Public()
+  @Put('flows/:flowKey/publish-status')
+  @ApiOperation({ summary: '更新发布状态（不触发 updatedAt 更新）' })
+  @ApiParam({ name: 'flowKey', description: '流程唯一标识key' })
+  async updatePublishStatus(
+    @Param('flowKey') flowKey: string,
+    @Body() body: { publishedAt: string },
+  ) {
+    await this.codeExecutorService.updatePublishedAt(flowKey, body.publishedAt);
+    return { message: '发布状态已更新' };
+  }
+
   @Delete('flows/:flowKey')
   @UseGuards(RolesGuard)
   @Roles(UserRole.ADMIN)

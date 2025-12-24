@@ -563,8 +563,30 @@ return {
     const hours = String(date.getHours()).padStart(2, '0');
     const minutes = String(date.getMinutes()).padStart(2, '0');
     const seconds = String(date.getSeconds()).padStart(2, '0');
-    
+
     return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+  }
+
+  /**
+   * 仅更新发布时间（不触发 updatedAt 更新）
+   * 使用原生 SQL 绕过 TypeORM 的 @UpdateDateColumn 自动更新
+   */
+  async updatePublishedAt(key: string, publishedAt: string): Promise<void> {
+    const flow = await this.codeFlowRepository.findOne({
+      where: { key },
+    });
+
+    if (!flow) {
+      throw new NotFoundException(`代码流程 ${key} 不存在`);
+    }
+
+    // 使用原生 SQL 只更新 published_at 和 status，不触发 updated_at
+    await this.dataSource.query(
+      `UPDATE code_flows SET published_at = ?, status = 1 WHERE \`key\` = ?`,
+      [publishedAt, key],
+    );
+
+    this.logger.log(`代码流程发布状态已更新: ${key}`);
   }
 }
 
