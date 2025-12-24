@@ -295,6 +295,7 @@ export class CodeExecutorService {
         'category',
         'description',
         'status',
+        'publishedAt',
         'createdAt',
         'updatedAt',
       ],
@@ -448,7 +449,7 @@ return {
    * 3. 这是一种乐观锁机制，防止多人协作时的并发冲突
    */
   async uploadCode(data: any): Promise<any> {
-    const { filePath, code, key, name, category, description, updateTime } = data;
+    const { filePath, code, key, name, category, description, updateTime, isPublish } = data;
 
     this.logger.log(`接收代码上传: ${key || filePath}`);
 
@@ -488,6 +489,12 @@ return {
       existingFlow.category = category || existingFlow.category;
       existingFlow.description = description || existingFlow.description;
       existingFlow.updatedBy = data.userId || null;
+      
+      // 如果是发布操作，更新发布状态和时间
+      if (isPublish) {
+        existingFlow.status = 1;
+        existingFlow.publishedAt = new Date();
+      }
 
       const updated = await this.codeFlowRepository.save(existingFlow);
 
@@ -504,20 +511,28 @@ return {
           key: updated.key,
           name: updated.name,
           updateTime: this.formatDateTime(updated.updatedAt),
+          publishedAt: updated.publishedAt ? this.formatDateTime(updated.publishedAt) : null,
         },
-        message: '代码流程已更新',
+        message: isPublish ? '代码流程已发布' : '代码流程已更新',
       };
     } else {
       // === 创建新流程 ===
-      const newFlow = await this.codeFlowRepository.save({
+      const flowData: Partial<CodeFlow> = {
         key,
         name: name || key,
         category,
         description,
         code,
-        status: 1,
+        status: isPublish ? 1 : 0,
         createdBy: data.userId || null,
-      });
+      };
+      
+      // 如果是发布操作，设置发布时间
+      if (isPublish) {
+        flowData.publishedAt = new Date();
+      }
+      
+      const newFlow = await this.codeFlowRepository.save(flowData);
 
       this.logger.log(`代码流程已创建: ${key}`);
 
@@ -529,8 +544,9 @@ return {
           key: newFlow.key,
           name: newFlow.name,
           updateTime: this.formatDateTime(newFlow.updatedAt),
+          publishedAt: newFlow.publishedAt ? this.formatDateTime(newFlow.publishedAt) : null,
         },
-        message: '代码流程已创建',
+        message: isPublish ? '代码流程已发布' : '代码流程已创建',
       };
     }
   }

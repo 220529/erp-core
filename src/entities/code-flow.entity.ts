@@ -45,5 +45,9 @@ export class CodeFlow extends BaseEntity {
   @ApiProperty({ description: '备注' })
   @Column({ type: 'text', nullable: true, comment: '备注信息' })
   remark: string;
+
+  @ApiProperty({ description: '最后发布时间' })
+  @Column({ name: 'published_at', type: 'datetime', nullable: true, comment: '最后发布到生产环境的时间' })
+  publishedAt: Date;
 }
 
