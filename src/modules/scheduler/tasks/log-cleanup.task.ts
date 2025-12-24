@@ -24,7 +24,7 @@ export class LogCleanupTask {
   /**
    * 每天 00:05 执行日志清理
    */
-  @Cron('5 0 * * *')
+  @Cron('5 0 * * *', { name: TASK_NAME })
   async handleLogCleanup() {
     await this.execute('cron');
   }
