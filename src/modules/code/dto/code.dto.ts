@@ -86,76 +86,83 @@ export class UpdateFlowDto {
  * 上传代码 DTO（用于 erp-code 项目的自动上传）
  */
 export class UploadCodeDto {
-  @ApiProperty({ 
-    description: '文件路径（相对于 erp-code/src/flows/）', 
-    example: '订单管理/创建订单.js' 
+  @ApiPropertyOptional({
+    description: '文件路径（相对于 erp-code/src/flows/），发布时可选',
+    example: '订单管理/创建订单.js',
   })
   @IsString()
-  @IsNotEmpty()
-  filePath: string;
+  @IsOptional()
+  filePath?: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: '代码内容',
     example: `// 订单创建逻辑
 const { repositories, params } = context;
-// ... 业务代码 ...`
+// ... 业务代码 ...`,
   })
   @IsString()
   @IsNotEmpty()
   code: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: '流程唯一标识key（从注释中解析）',
-    example: 'customer/create'
+    example: 'customer/create',
   })
   @IsString()
   @IsNotEmpty()
   key: string;
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: '流程名称（从注释中解析）',
-    example: '创建客户'
+    example: '创建客户',
   })
   @IsString()
   @IsNotEmpty()
   name: string;
 
-  @ApiPropertyOptional({ 
+  @ApiPropertyOptional({
     description: '流程分类（从路径中解析）',
-    example: '客户管理'
+    example: '客户管理',
   })
   @IsString()
   @IsOptional()
   category?: string;
 
-  @ApiPropertyOptional({ 
-    description: '流程描述（从注释中解析）'
+  @ApiPropertyOptional({
+    description: '流程描述（从注释中解析）',
   })
   @IsString()
   @IsOptional()
   description?: string;
 
-  @ApiPropertyOptional({ 
+  @ApiPropertyOptional({
     description: '更新时间（从注释中解析，用于乐观锁）',
-    example: '2025-10-30 12:00:00'
+    example: '2025-10-30 12:00:00',
   })
   @IsString()
   @IsOptional()
   updateTime?: string;
 
-  @ApiPropertyOptional({ 
+  @ApiPropertyOptional({
     description: '创建人/更新人 ID',
-    example: 1
+    example: 1,
   })
   @IsNumber()
   @IsOptional()
   userId?: number;
 
-  @ApiPropertyOptional({ 
+  @ApiPropertyOptional({
     description: '请求时间戳（毫秒，用于防重放攻击，30分钟内有效）',
-    example: 1730276382988
+    example: 1730276382988,
   })
   @IsNumber()
   @IsOptional()
   timestamp?: number;
+
+  @ApiPropertyOptional({
+    description: '是否为发布操作（发布时设置 status=1 和 publishedAt）',
+    example: true,
+  })
+  @IsOptional()
+  isPublish?: boolean;
 }
