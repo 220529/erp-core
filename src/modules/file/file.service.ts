@@ -16,13 +16,21 @@ export class FileService {
     private fileRepository: Repository<File>,
     private configService: ConfigService,
   ) {
-    this.ossClient = new OSS({
-      region: this.configService.get<string>('OSS_REGION', ''),
-      accessKeyId: this.configService.get<string>('OSS_ACCESS_KEY_ID', ''),
-      accessKeySecret: this.configService.get<string>('OSS_ACCESS_KEY_SECRET', ''),
-      bucket: this.configService.get<string>('OSS_BUCKET', ''),
-      secure: true, // 强制使用 https
-    });
+    const region = this.configService.get<string>('OSS_REGION', '');
+    const accessKeyId = this.configService.get<string>('OSS_ACCESS_KEY_ID', '');
+    const accessKeySecret = this.configService.get<string>('OSS_ACCESS_KEY_SECRET', '');
+    const bucket = this.configService.get<string>('OSS_BUCKET', '');
+
+    // 只有配置完整时才初始化 OSS 客户端
+    if (region && accessKeyId && accessKeySecret && bucket) {
+      this.ossClient = new OSS({
+        region,
+        accessKeyId,
+        accessKeySecret,
+        bucket,
+        secure: true,
+      });
+    }
   }
 
   /**
@@ -85,19 +93,23 @@ export class FileService {
       const uniqueName = `${Date.now()}-${Math.random().toString(36).slice(2)}${path.extname(fileName)}`;
       const ossPath = `files/${dateDir}/${uniqueName}`;
 
-      const ossResult = await this.ossClient.put(ossPath, file.buffer, {
-        headers: {
-          'Content-Type': file.mimetype,
-        },
-      });
+      let fileUrl = '';
+      if (this.ossClient) {
+        const ossResult = await this.ossClient.put(ossPath, file.buffer, {
+          headers: {
+            'Content-Type': file.mimetype,
+          },
+        });
+        fileUrl = ossResult.url;
+      }
 
       const fileEntity = await this.fileRepository.save(
         this.fileRepository.create({
           name: fileName,
           isFolder: false,
           parentId: fileParentId,
-          url: ossResult.url,
-          storagePath: ossPath,
+          url: fileUrl,
+          storagePath: this.ossClient ? ossPath : '',
           size: file.size,
           uploadedBy: userId,
         }),
@@ -141,7 +153,7 @@ export class FileService {
 
     if (file.isFolder) {
       await this.removeFolderRecursive(id);
-    } else if (file.storagePath) {
+    } else if (file.storagePath && this.ossClient) {
       try {
         await this.ossClient.delete(file.storagePath);
         console.log(`OSS 删除成功: ${file.storagePath}`);
@@ -159,7 +171,7 @@ export class FileService {
     for (const child of children) {
       if (child.isFolder) {
         await this.removeFolderRecursive(child.id);
-      } else if (child.storagePath) {
+      } else if (child.storagePath && this.ossClient) {
         try {
           await this.ossClient.delete(child.storagePath);
           console.log(`OSS 删除成功: ${child.storagePath}`);
